@@ -62,10 +62,6 @@ document.addEventListener("mousedown", (e) => {
     mouseDOWN(e)
 })
 
-document.addEventListener("touchstart", (e) => {
-    mouseDOWN(e)
-})
-
 function mouseUP(e) {
     if (isColliding(character)) {
         var degree = "INVALID";
@@ -129,10 +125,6 @@ function mouseUP(e) {
 }
 
 document.addEventListener("mouseup", (event) => {
-    mouseUP(event);
-})
-
-document.addEventListener("touchend", (event) => {
     mouseUP(event);
 })
 
