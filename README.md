@@ -1,5 +1,7 @@
 # Parkour-Game
 Easily Customizable Parkour "Game" Made Using Matter.js
+
+I basically tried making my own version of a slingshot in Matter.js becuase I didn't know other people already did.
  
 Even after countless of attempts to make this work on mobile devices. It just doesn't work. Currently only working on computers or devices with similar mouse controls as computers.
 
