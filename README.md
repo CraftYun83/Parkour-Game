@@ -5,7 +5,7 @@ I basically tried making my own version of a slingshot in Matter.js becuase I di
  
 Even after countless of attempts to make this work on mobile devices. It just doesn't work. Currently only working on computers or devices with similar mouse controls as computers.
 
-The map is basically non-existent.
+The map is randomly generated, and new terrain is added every 2 seconds.
 
 Controls:
   - Click on a random location, and you can hold it (kind of like the controls for Angry Birds). Nothing will happen if you let go above the starting position of the cursor.
