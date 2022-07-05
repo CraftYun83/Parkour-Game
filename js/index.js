@@ -17,6 +17,8 @@ var engine = Engine.create({
     }
 });
 
+var followBody = undefined;
+
 var render = Render.create({
     element: document.body,
     engine: engine,
@@ -36,6 +38,7 @@ var maxLeft = 400;
 var character = Bodies.rectangle(400, 900, 80, 80);
 Body.setAngularVelocity(character, 0.05)
 character.special = "Hey, why are you looking at this?"
+followBody = character
 var lava = Bodies.rectangle(3800, 3000, 10000000000, 1000, { isStatic: true, render: {fillStyle: "#ff3c00"}});
 var platform1 = Bodies.rectangle(400, 1200, 810, 60, { isStatic: true});
 
@@ -103,8 +106,8 @@ function mouseUP(e) {
             }
             else if (degree > 45) {
                 Body.applyForce(character, character.position, {
-                    x: power/(degree/45),
-                    y: -power*(degree/45)
+                    x: power*(degree/45),
+                    y: -power/(degree/45)
                 })
             } else if (degree < 45) {
                 Body.applyForce(character, character.position, {
@@ -125,8 +128,8 @@ function mouseUP(e) {
                 })
             } else if (-degree > 45) {
                 Body.applyForce(character, character.position, {
-                    x: power/(degree/45),
-                    y: power*(degree/45)
+                    x: power*(degree/45),
+                    y: power/(degree/45)
                 })
             } else if (-degree < 45) {
                 Body.applyForce(character, character.position, {
@@ -158,16 +161,18 @@ function follow() {
             location.href = "death.html"
         }, 500)
     }
-    Render.lookAt(render, character, {
-        x: window.innerWidth,
-        y: 600
-    });
+    if (followBody != undefined) {
+        Render.lookAt(render, followBody, {
+            x: window.innerWidth,
+            y: 600
+        });
+    }
     requestAnimationFrame(follow)
 }
 
 function spawnTerrain() {
-    Composite.add(engine.world, Bodies.rectangle(maxRight+1400, Common.random(800, 1400), 810, 60, { isStatic: true}));
-    Composite.add(engine.world, Bodies.rectangle(maxLeft-1400, Common.random(800, 1400), 810, 60, { isStatic: true}));
+    Composite.add(engine.world, Bodies.rectangle(maxRight+1400, Common.random(800, 1800), 810, 60, { isStatic: true}));
+    Composite.add(engine.world, Bodies.rectangle(maxLeft-1400, Common.random(800, 1800), 810, 60, { isStatic: true}));
     maxLeft -= 1400
     maxRight += 1400
     setTimeout(spawnTerrain, 2000);
