@@ -8,6 +8,7 @@ var Engine = Matter.Engine,
     Common = Matter.Common,
     Composite = Matter.Composite;
 
+var necromancer = new Resurrect();
 var engine = Engine.create({
     render: {
         options: {
@@ -63,6 +64,32 @@ var runner = Runner.create();
 
 Runner.run(runner, engine);
 
+var bar = new ProgressBar.Line(document.getElementById("container"), {
+    strokeWidth: 4,
+    easing: 'easeInOut',
+    duration: 1400,
+    color: '#3d81ff',
+    trailColor: '#eee',
+    trailWidth: 1,
+    svgStyle: {width: '100%', height: '100%'}
+});
+
+function cooldown() {
+    bar.animate(1, {
+        duration: 2000
+    })
+}
+
+function used() {
+    bar.animate(0, {
+        duration: 200
+    })
+}
+
+bar.animate(1, {
+    duration: 10
+})
+
 function getDegree(x1, y1) {
     return 90-Math.acos(x1/Math.sqrt(Math.pow(x1, 2)+Math.pow(y1, 2))) * (180 / Math.PI);
 }
@@ -86,7 +113,7 @@ document.addEventListener("touchstart", (e) => {
 })
 
 function mouseUP(e) {
-    if (isColliding(character) && !dead) {
+    if (bar.value() == 1 && !dead) {
         var degree = "INVALID";
         var difX = cachedPosition.x - e.clientX
         var difY = cachedPosition.y - e.clientY
@@ -99,51 +126,55 @@ function mouseUP(e) {
         var power = Math.sqrt(Math.pow(difX, 2)+Math.pow(difY, 2))/1000
         if (degree > 0) {
             if (degree < 25) {
-                Body.applyForce(character, character.position, {
+                Body.applyForce(followBody, followBody.position, {
                     x: power*(degree/45),
                     y: -0.6,
                 })
             }
             else if (degree > 45) {
-                Body.applyForce(character, character.position, {
+                Body.applyForce(followBody, followBody.position, {
                     x: power*(degree/45),
                     y: -power/(degree/45)
                 })
             } else if (degree < 45) {
-                Body.applyForce(character, character.position, {
+                Body.applyForce(followBody, followBody.position, {
                     x: power*(degree/45),
                     y: -power/(degree/45)
                 })
             } else if (degree == 45) {
-                Body.applyForce(character, character.position, {
+                Body.applyForce(followBody, followBody.position, {
                     x: power,
                     y: -power
                 })
             }
         } else {
             if (-degree < 25) {
-                Body.applyForce(character, character.position, {
+                Body.applyForce(followBody, followBody.position, {
                     x: power*(degree/45),
                     y: -0.6
                 })
             } else if (-degree > 45) {
-                Body.applyForce(character, character.position, {
+                Body.applyForce(followBody, followBody.position, {
                     x: power*(degree/45),
                     y: power/(degree/45)
                 })
             } else if (-degree < 45) {
-                Body.applyForce(character, character.position, {
+                Body.applyForce(followBody, followBody.position, {
                     x: power*(degree/45),
                     y: power/(degree/45)
                 })
             } else if (-degree == 45) {
-                Body.applyForce(character, character.position, {
+                Body.applyForce(followBody, followBody.position, {
                     x: power,
                     y: -power
                 })
             }
         }
-        Body.setAngularVelocity(character, 0.1)
+        Body.setAngularVelocity(followBody, 0.1)
+        bar.animate(0, {
+            duration: 100
+        })
+        setTimeout(() => {cooldown()}, 100)
     }
 }
 
@@ -156,13 +187,14 @@ document.addEventListener("touchend", (event) => {
 })
 
 function follow() {
-    if (SAT.collides(character, lava) && !dead) {
+    if (SAT.collides(followBody, lava) && !dead) {
         Runner.stop(runner)
         setTimeout(() => {
             dead = true;
+            score = Math.round(Math.abs(followBody.position.x))
             engine.enabled = false
             document.body.classList.add("death")
-            document.body.innerHTML = "<h1>YOU DIED!</h1><button onclick='window.location.reload()'>Try Again!</button>"
+            document.body.innerHTML = "<h1 id='died'>YOU DIED</h1><button onclick='window.location.reload()'>Try Again!</button><h1 id='score'>Score: "+score+"</h1>"
         }, 200)
     }
     if (followBody != undefined) {
