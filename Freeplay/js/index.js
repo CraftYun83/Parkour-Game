@@ -6,6 +6,7 @@ var Engine = Matter.Engine,
     Collision = Matter.Collision,
     SAT = Matter.SAT,
     Common = Matter.Common,
+    World = Matter.World,
     Composite = Matter.Composite;
 
 var necromancer = new Resurrect();
@@ -20,6 +21,7 @@ var engine = Engine.create({
 
 var followBody = undefined;
 var dead = false;
+var genTerrain = true;
 
 var render = Render.create({
     element: document.body,
@@ -186,6 +188,12 @@ document.addEventListener("touchend", (event) => {
     mouseUP(event);
 })
 
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        location.href = "../"
+    }
+})
+
 function follow() {
     if (SAT.collides(followBody, lava) && !dead) {
         Runner.stop(runner)
@@ -194,7 +202,7 @@ function follow() {
             score = Math.round(Math.abs(followBody.position.x))
             engine.enabled = false
             document.body.classList.add("death")
-            document.body.innerHTML = "<h1 id='died'>YOU DIED</h1><button onclick='window.location.reload()'>Try Again!</button><h1 id='score'>Score: "+score+"</h1>"
+            document.body.innerHTML = "<h1 id='died'>YOU DIED</h1><button id='restart' onclick='window.location.reload()'>Try Again!</button><h1 id='score'>Score: "+score+"</h1>"
         }, 200)
     }
     if (followBody != undefined) {
@@ -206,12 +214,62 @@ function follow() {
     requestAnimationFrame(follow)
 }
 
+document.getElementById("loadMap").onclick = function() {
+    var cachedPower = bar.value()
+    var text = prompt("Paste your map text!");
+    if (!(text == null || text === "")) {
+        loadMap(text)
+    }
+    bar.animate(cachedPower, {
+        duration: 10
+    })
+    setTimeout(() => {
+        bar.animate(1, {
+            duration: (1-cachedPower)*2000
+        })
+    }, 10)
+}
+
+function copyText(TextToCopy) {
+    var TempText = document.createElement("input");
+    TempText.value = TextToCopy;
+    document.body.appendChild(TempText);
+    TempText.select();
+    
+    document.execCommand("copy");
+    document.body.removeChild(TempText);
+}
+
+function isJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+function loadMap(mapText) {
+    if (mapText) {
+        if (isJsonString(mapText)) {
+            var world = necromancer.resurrect(mapText);
+            World.clear(engine.world);
+            engine.world = world;
+            followBody = engine.world.bodies[0]
+            Body.setPosition(followBody, {x: followBody.position.x, y: followBody.position.y - 200})
+            spawnTerrain = ""
+        }
+    }
+}
+
 function spawnTerrain() {
-    Composite.add(engine.world, Bodies.rectangle(maxRight+1400, Common.random(800, 1800), 810, 60, { isStatic: true}));
-    Composite.add(engine.world, Bodies.rectangle(maxLeft-1400, Common.random(800, 1800), 810, 60, { isStatic: true}));
-    maxLeft -= 1400
-    maxRight += 1400
-    setTimeout(spawnTerrain, 2000);
+    if (genTerrain) {
+        Composite.add(engine.world, Bodies.rectangle(maxRight+1400, Common.random(800, 1800), 810, 60, { isStatic: true}));
+        Composite.add(engine.world, Bodies.rectangle(maxLeft-1400, Common.random(800, 1800), 810, 60, { isStatic: true}));
+        maxLeft -= 1400
+        maxRight += 1400
+        setTimeout(spawnTerrain, 2000);
+    }
 }
 
 spawnTerrain()

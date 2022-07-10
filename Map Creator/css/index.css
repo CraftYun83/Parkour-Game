@@ -1,0 +1,45 @@
+body {
+    margin: 0;
+    background-color: #595959;
+}
+
+@font-face {
+    font-family: Minecraftia;
+    src: url("../Minecraftia-Regular.ttf");
+}
+
+button#exportMap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: grey;
+    font-family: Minecraftia;
+    font-size: 30px;
+    color: white;
+    border-radius: 10px;
+    height: 7%;
+}
+
+button#createPlatform {
+    position: absolute;
+    left: 0;
+    top: 8%;
+    background-color: grey;
+    font-family: Minecraftia;
+    font-size: 30px;
+    color: white;
+    border-radius: 10px;
+    height: 7%;
+}
+
+button#deletePlatform {
+    position: absolute;
+    left: 0;
+    top: 16%;
+    background-color: grey;
+    font-family: Minecraftia;
+    font-size: 30px;
+    color: white;
+    border-radius: 10px;
+    height: 7%;
+}

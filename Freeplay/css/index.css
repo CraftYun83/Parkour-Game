@@ -8,6 +8,18 @@ body {
     src: url("../Minecraftia-Regular.ttf");
 }
 
+button#loadMap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: grey;
+    font-family: Minecraftia;
+    font-size: 30px;
+    color: white;
+    border-radius: 10px;
+    height: 7%;
+}
+
 #container {
     position: absolute;
     right: 0;
@@ -42,7 +54,7 @@ h1#score {
     position: absolute;
     bottom: 0;
 }
-button {
+button#restart {
     position: absolute;
     margin-top: 10%;
     background-color: grey;
